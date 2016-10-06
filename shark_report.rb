@@ -1,4 +1,9 @@
 module ProbeReport
+  # Regex for parsing data
+  module Regex
+    CYCLE = /CYCLE\s\K\d+/
+  end
+
   # Report
   class Report
     # Raw report data
@@ -9,6 +14,7 @@ module ProbeReport
 
     def initialize(file)
       @data = parse(File.read(file))
+      @cycles = parse_cycles(@data)
     end
 
     # Parses a dataset into an actually
@@ -27,6 +33,12 @@ module ProbeReport
 
       # Remove spaces between negative symbols and numbers
       data.map! { |d| d.gsub(/-\s/, '-') }
+    end
+
+    # Interprets data into Cycles
+    def parse_cycles(data)
+      data.collect { |d| d.scan(Regex::CYCLE) }.uniq
+          .map     { |d| Cycle.new number: d }
     end
   end
 

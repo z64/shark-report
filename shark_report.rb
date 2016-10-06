@@ -8,13 +8,13 @@ module ProbeReport
     NAME = /FEATURE\s\K\w+/
 
     # Feature nominal value
-    NOMINAL = /NOMINAL\s\K\d+\.\d+/
+    NOMINAL = /NOMINAL\s\K-?\d+\.\d+/
 
     # Feature tolerance
     TOLERANCE = /TOL\s\K\d+\.\d+/
 
     # Feature measured value
-    ACTUAL = /ACTUAL\s\K\d+\.\d+/
+    ACTUAL = /ACTUAL\s\K-?\d+\.\d+/
   end
 
   # Report

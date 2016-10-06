@@ -5,7 +5,7 @@ module ProbeReport
     CYCLE = /CYCLE\s\K\d+/
 
     # Feature name
-    NAME = /NAME\s\K\w+/
+    NAME = /FEATURE\s\K\w+/
 
     # Feature nominal value
     NOMINAL = /NOMINAL\s\K\d+\.\d+/
@@ -55,7 +55,7 @@ module ProbeReport
     # their associated cycle
     def make_cycles!
       data.each do |d|
-        number = d.scan(Regex::CYCLE)
+        number = d.scan(Regex::CYCLE).first.to_i
         cycle = @cycles.find { |c| c.number == number }
         if cycle.nil?
           cycle = Cycle.new(number: number)
@@ -91,6 +91,13 @@ module ProbeReport
     def add_feature(feature)
       @features << feature
     end
+
+    def to_hash
+      {
+        cycle: number,
+        features: features.map(&:to_hash)
+      }
+    end
   end
 
   # A feature
@@ -123,6 +130,17 @@ module ProbeReport
       @actual = actual
       @deviation = actual - nominal
       @out_tol = @deviation.abs > tolerance ? @deviation.abs - tolerance : 0.0
+    end
+
+    def to_hash
+      {
+        name: name,
+        nominal: nominal,
+        tolerance: tolerance,
+        actual: actual,
+        deviation: deviation,
+        out_tol: out_tol
+      }
     end
   end
 end

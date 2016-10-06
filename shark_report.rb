@@ -37,6 +37,23 @@ module ProbeReport
       }
     end
 
+    # Export's a reports data as a tsv
+    def to_tsv
+      data = []
+      cycles.each do |c|
+        c.features.each do |f|
+          data << "#{c.number}\t"\
+            "#{f.name}\t"\
+            "#{f.nominal}\t"\
+            "#{f.tolerance}\t"\
+            "#{f.actual}\t"\
+            "#{f.deviation}\t"\
+            "#{f.out_tol}"
+        end
+      end
+      data
+    end
+
     private
 
     # Parses a dataset into an actually
@@ -99,6 +116,7 @@ module ProbeReport
       @features << feature
     end
 
+    # Exports a cycle's data as a hash
     def to_hash
       {
         cycle: number,

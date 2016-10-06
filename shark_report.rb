@@ -31,6 +31,12 @@ module ProbeReport
       make_cycles!
     end
 
+    def to_hash
+      {
+        cycles: cycles.map(&:to_hash)
+      }
+    end
+
     private
 
     # Parses a dataset into an actually

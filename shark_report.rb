@@ -51,7 +51,7 @@ module ProbeReport
             "#{f.out_tol}"
         end
       end
-      data
+      data.join("\n")
     end
 
     private

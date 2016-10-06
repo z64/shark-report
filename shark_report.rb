@@ -31,6 +31,8 @@ module ProbeReport
       make_cycles!
     end
 
+    private
+
     # Parses a dataset into an actually
     # useful format
     def parse(data)

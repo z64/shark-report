@@ -1,7 +1,20 @@
 module ProbeReport
   # Regex for parsing data
   module Regex
+    # Cycle number
     CYCLE = /CYCLE\s\K\d+/
+
+    # Feature name
+    NAME = /NAME\s\K\w+/
+
+    # Feature nominal value
+    NOMINAL = /NOMINAL\s\K\d+\.\d+/
+
+    # Feature tolerance
+    TOLERANCE = /TOLERANCE\s\K\d+\.\d+/
+
+    # Feature measured value
+    ACTUAL = /ACTUAL\s\K\d+\.\d+/
   end
 
   # Report
@@ -14,7 +27,8 @@ module ProbeReport
 
     def initialize(file)
       @data = parse(File.read(file))
-      @cycles = parse_cycles(@data)
+      @cycles = []
+      make_cycles!
     end
 
     # Parses a dataset into an actually
@@ -35,10 +49,25 @@ module ProbeReport
       data.map! { |d| d.gsub(/-\s/, '-') }
     end
 
-    # Interprets data into Cycles
-    def parse_cycles(data)
-      data.collect { |d| d.scan(Regex::CYCLE) }.uniq
-          .map     { |d| Cycle.new number: d }
+    # Scans data and creates features with
+    # their associated cycle
+    def make_cycles!
+      data.each do |d|
+        number = d.scan(Regex::CYCLE)
+        cycle = @cycles.find { |c| c.number == number }
+        if cycle.nil?
+          cycle = Cycle.new(number: number)
+          @cycles << cycle
+        end
+        cycle.add_feature(
+          Feature.new(
+            name:      d.scan(Regex::NAME).first,
+            nominal:   d.scan(Regex::NOMINAL).first.to_f,
+            tolerance: d.scan(Regex::TOLERANCE).first.to_f,
+            actual:    d.scan(Regex::ACTUAL).first.to_f
+          )
+        )
+      end
     end
   end
 

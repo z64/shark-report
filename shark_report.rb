@@ -11,7 +11,7 @@ module ProbeReport
     NOMINAL = /NOMINAL\s\K\d+\.\d+/
 
     # Feature tolerance
-    TOLERANCE = /TOLERANCE\s\K\d+\.\d+/
+    TOLERANCE = /TOL\s\K\d+\.\d+/
 
     # Feature measured value
     ACTUAL = /ACTUAL\s\K\d+\.\d+/
@@ -69,6 +69,7 @@ module ProbeReport
         end
         cycle.add_feature(
           Feature.new(
+            data:      d,
             name:      d.scan(Regex::NAME).first,
             nominal:   d.scan(Regex::NOMINAL).first.to_f,
             tolerance: d.scan(Regex::TOLERANCE).first.to_f,
@@ -108,6 +109,10 @@ module ProbeReport
 
   # A feature
   class Feature
+    # The raw data the feature
+    # was created with
+    attr_reader :data
+
     # Name of feature
     attr_reader :name
 
@@ -126,10 +131,12 @@ module ProbeReport
     # Amount a value is out of tolerance
     attr_reader :out_tol
 
-    def initialize(name: nil,
+    def initialize(data: nil,
+                   name: nil,
                    nominal: 0.0,
                    tolerance: 0.0,
                    actual: 0.0)
+      @data = data
       @name = name
       @nominal = nominal
       @tolerance = tolerance
@@ -140,6 +147,7 @@ module ProbeReport
 
     def to_hash
       {
+        data: data,
         name: name,
         nominal: nominal,
         tolerance: tolerance,

@@ -12,7 +12,7 @@ module ProbeReport
     end
 
     # Parses a dataset into an actually
-    # userful format
+    # useful format
     def parse(data)
       # Only take CYCLE lines
       data = data.split("\n").select do |d|
